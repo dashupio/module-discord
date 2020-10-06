@@ -25,20 +25,13 @@ class DiscordModule extends Module {
   }
   
   /**
-   * Register all connect interfaces here
-   * 
-   * ```
-   * // register connect class
-   * register(Connect);
-   * ```
-   * 
-   * Class `Connect` should extend `require('@dashup/module').Connect`
-   * 
-   * @param {Function} register 
+   * register
+   *
+   * @param {*} fn 
    */
-  connects(register) {
+  register(fn) {
     // register discord connect
-    register(DiscordConnect);
+    fn('connect', DiscordConnect);
   }
 
   /**

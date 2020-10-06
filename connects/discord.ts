@@ -1,11 +1,11 @@
 
 // import connect interface
-import { Query, Connect } from '@dashup/module';
+import { Query, Struct } from '@dashup/module';
 
 /**
  * build address helper
  */
-export default class DiscordConnect extends Connect {
+export default class DiscordConnect extends Struct {
   /**
    * construct discord connector
    *
@@ -178,8 +178,14 @@ export default class DiscordConnect extends Connect {
     // check author
     if (message.author.id === this.dashup.config.client) return;
 
+    // setup opts
+    const opts = {
+      type   : 'connect',
+      struct : 'discord',
+    };
+
     // query pages where
-    const pages = await new Query(this.dashup, 'page').where({
+    const pages = await new Query(opts, this.dashup, 'page').where({
       'connects.channel' : message.channel.id,
     }).in('connects.direction', ['both', 'discord']).find();
 
@@ -191,7 +197,7 @@ export default class DiscordConnect extends Connect {
       // connects
       connects.forEach(async () => {
         // send message
-        const exists = await new Query(this.dashup, 'message').where({
+        const exists = await new Query(opts, this.dashup, 'message').where({
           temp    : message.id,
           subject : page.get('_id'),
         }).count();
@@ -219,15 +225,18 @@ export default class DiscordConnect extends Connect {
           embeds.push(attachment.url);
         });
 
-        // emit message
-        this.dashup.connection.rpc('create.message', {
-          id     : message.author.id,
-          type   : 'discord',
-          name   : message.author.username,
-          avatar : `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}`,
-        }, {
+        // emit new message
+        this.dashup.connection.action({
+          type : 'page',
+          user : {
+            id     : message.author.id,
+            type   : 'discord',
+            name   : message.author.username,
+            avatar : `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}`,
+          },
+          struct : 'channel',
+        }, 'send', {
           embeds,
-          type    : 'post',
           temp    : message.id,
           subject : page.get('_id'),
           message : content,
