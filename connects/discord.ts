@@ -82,7 +82,8 @@ export default class DiscordConnect extends Struct {
   get actions() {
     // return connect actions
     return {
-      guild : this.guildAction,
+      guild          : this.guildAction,
+      'connect.save' : this.save,
     };
   }
 
