@@ -18,6 +18,7 @@ export default class DiscordConnect extends Struct {
     // bind guild action
     this.onMessage = this.onMessage.bind(this);
     this.guildAction = this.guildAction.bind(this);
+    this.messageEvent = this.messageEvent.bind(this);
 
     // log message
     this.dashup.on('message', this.onMessage);
@@ -62,6 +63,16 @@ export default class DiscordConnect extends Struct {
     // return object of views
     return {
       config : 'connect/discord/config',
+    };
+  }
+
+  /**
+   * returns connect actions
+   */
+  get events() {
+    // return connect actions
+    return {
+      'message.sent' : this.messageEvent,
     };
   }
 
@@ -119,12 +130,18 @@ export default class DiscordConnect extends Struct {
    * @param connect 
    * @param data 
    */
-  async message({ req, dashup }, connect, message) {
+  async messageEvent(opts, subject, message) {
     // check if discord
     if ((message.by || {}).type === 'discord') return;
 
-    // check direction
-    if (!['both', 'dashup'].includes(connect.direction)) return;
+    // query pages where
+    const page = await new Query(opts, this.dashup, 'page').findById(subject);
+
+    // get connects
+    const connect = (page.get('connects') || []).find((c) => c.type === 'discord' && ['both', 'dashup'].includes(c.direction));
+
+    // check connect
+    if (!connect) return;
 
     // channel
     const channel = this.dashup.bot.channels.cache.get(connect.channel);
