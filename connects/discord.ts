@@ -82,8 +82,8 @@ export default class DiscordConnect extends Struct {
   get actions() {
     // return connect actions
     return {
-      guild          : this.guildAction,
-      'connect.save' : this.save,
+      save  : this.save,
+      guild : this.guildAction,
     };
   }
 
@@ -122,6 +122,9 @@ export default class DiscordConnect extends Struct {
     connect.state = state;
     connect.guild = guild;
     connect.permissions = permissions;
+
+    // return connect
+    return { connect };
   }
 
   /**

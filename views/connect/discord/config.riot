@@ -111,7 +111,10 @@
 
           // call socket
           this.update({
-            info : await eden.socket.call('dashup.connect.action', this.props.page.get('_id'), 'guild', this.props.connect, {})
+            info : await this.props.dashup.action({
+              type   : 'connect',
+              struct : 'discord',
+            }, 'guild', this.props.connect, {}),
           });
 
           // update info
