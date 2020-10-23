@@ -139,7 +139,10 @@ export default class DiscordConnect extends Struct {
     if ((message.by || {}).type === 'discord') return;
 
     // query pages where
-    const page = await new Query(opts, this.dashup, 'page').findById(subject);
+    const page = await new Query(opts, 'page').findById(subject);
+
+    // check page
+    if (!page) return;
 
     // get connects
     const connect = (page.get('connects') || []).find((c) => c.type === 'discord' && ['both', 'dashup'].includes(c.direction));
@@ -206,7 +209,7 @@ export default class DiscordConnect extends Struct {
     };
 
     // query pages where
-    const pages = await new Query(opts, this.dashup, 'page').where({
+    const pages = await new Query(opts, 'page').where({
       'connects.channel' : message.channel.id,
     }).in('connects.direction', ['both', 'discord']).find();
 
@@ -218,7 +221,7 @@ export default class DiscordConnect extends Struct {
       // connects
       connects.forEach(async () => {
         // send message
-        const exists = await new Query(opts, this.dashup, 'message').where({
+        const exists = await new Query(opts, 'message').where({
           temp    : message.id,
           subject : page.get('_id'),
         }).count();
