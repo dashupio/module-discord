@@ -17,6 +17,8 @@ export default class DiscordConnect extends Struct {
 
     // bind guild action
     this.onMessage = this.onMessage.bind(this);
+    this.saveAction = this.saveAction.bind(this);
+    this.sendAction = this.sendAction.bind(this);
     this.guildAction = this.guildAction.bind(this);
     this.messageEvent = this.messageEvent.bind(this);
 
@@ -82,7 +84,8 @@ export default class DiscordConnect extends Struct {
   get actions() {
     // return connect actions
     return {
-      save  : this.save,
+      save  : this.saveAction,
+      send  : this.sendAction,
       guild : this.guildAction,
     };
   }
@@ -110,7 +113,7 @@ export default class DiscordConnect extends Struct {
    * @param connect 
    * @param data 
    */
-  async save({ req, dashup }, connect) {
+  async saveAction({ req, dashup }, connect) {
     // check dashup
     if (!dashup) return;
 
@@ -155,6 +158,27 @@ export default class DiscordConnect extends Struct {
 
     // send to channel
     channel.send(`${message.by ? `**${message.by.name}**: ` : ''}${message.message}`);
+  }
+
+  /**
+   * action method
+   *
+   * @param param0 
+   * @param connect 
+   * @param data 
+   */
+  async sendAction({ req }, data) {
+    // check secret
+    if (data.internal !== this.dashup.config.internal) return;
+
+    // channel
+    const channel = this.dashup.bot.channels.cache.get(data.channel);
+
+    // send to channel
+    channel.send(...data.args);
+
+    // return true
+    return true;
   }
 
   /**
