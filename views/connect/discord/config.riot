@@ -170,7 +170,7 @@
 
         // redirect uri
         url = url + `&redirect_uri=${encodeURIComponent(`https://${window.location.hostname}/connect/${this.props.connect.type}`)}`;
-        url = url + `&state=${this.props.page.get('_id')}:${this.props.connect.uuid}`;
+        url = url + `&state=${this.props.page.get('_id')}:${this.props.connect.uuid}:${this.props.session}`;
 
         // return url
         return url;
