@@ -64,7 +64,7 @@ export default class DiscordConnect extends Struct {
   get views() {
     // return object of views
     return {
-      config : 'connect/discord/config',
+      config : 'connect/discord',
     };
   }
 
@@ -138,6 +138,9 @@ export default class DiscordConnect extends Struct {
    * @param data 
    */
   async messageEvent(opts, subject, message) {
+    // check message
+    if (!message) return;
+
     // check if discord
     if ((message.by || {}).type === 'discord') return;
 
