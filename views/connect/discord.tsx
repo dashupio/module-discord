@@ -1,6 +1,5 @@
 
-// import react
-import Select from 'react-select';
+import { Select } from '@dashup/ui';
 import { windowPopup } from 'window-popup';
 import React, { useState } from 'react';
 
