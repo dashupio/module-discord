@@ -142,7 +142,7 @@ export default class DiscordConnect extends Struct {
     if (!message) return;
 
     // check if discord
-    if ((message.by || {}).type === 'discord') return;
+    if ((message.by || {}).type === 'discord' || subject.includes('.')) return;
 
     // query pages where
     const page = await new Query(opts, 'page').findById(subject);
