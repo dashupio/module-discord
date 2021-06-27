@@ -267,7 +267,7 @@ export default class DiscordConnect extends Struct {
         // loop
         mentions.forEach((mention) => {
           // replace
-          content = content.split(`<@!${mention.id}>`).join(`@${mention.username.toLowerCase()}`);
+          content = content.split(`<@!${mention.id}>`).join(`@${`${mention.username}`.toLowerCase()}`);
         });
 
         // loop attachments

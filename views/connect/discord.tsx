@@ -1,28 +1,12 @@
 
 import { Select } from '@dashup/ui';
 import { windowPopup } from 'window-popup';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // create discord connect
 const ConnectDiscord = (props = {}) => {
   // state
   const [info, setInfo] = useState({});
-  const [loading, setLoading] = useState(null);
-
-  // set connect
-  const setConnect = (key, value = null, prev = false) => {
-    // run props
-    props.setConnect(props.connect, key, value, prev);
-  };
-
-  // on channel
-  const onChannel = (channel) => {
-    // set connect
-    setConnect({
-      title   : `${info.name}: #${channel.name}`,
-      channel : channel.id,
-    });
-  };
 
   // get invite url
   const getInviteURL = () => {
@@ -31,7 +15,7 @@ const ConnectDiscord = (props = {}) => {
 
     // redirect uri
     url = url + `&redirect_uri=${encodeURIComponent(`https://${window.location.hostname}/connect/${props.connect.type}`)}`;
-    url = url + `&state=${props.page.get('_id')}:${props.connect.uuid}:${props.session}`;
+    url = url + `&state=${props.page.get('_id')}:${props.connect.uuid}:${props.dashup.sessionID}`;
 
     // return url
     return url;
@@ -74,22 +58,27 @@ const ConnectDiscord = (props = {}) => {
     });
   };
 
+  useEffect(() => {
+    // check guild
+    if (!props.connect.guild) return;
+  
+    // check guild
+    props.dashup.action({
+      type   : 'connect',
+      struct : 'discord',
+    }, 'guild', props.connect, {}).then(setInfo);
+  }, [props.connect.guild]);
+
   // return jsx
   return (
     <div className="card mb-3">
       <div className="card-header">
         <b>Discord Connector</b>
       </div>
-      <div if={ !props.connect.guild } className="card-body">
-        <button onClick={ (e) => onConnect(e) } className="btn btn-dark">
-          <i className="fab fa-discord mr-2" />
-          Invite Discord Bot
-        </button>
-      </div>
 
-      { !!props.connect.guild && (
+      { props.connect.guild ? (
         <div className="card-body">
-          { loading === 'guild' ? (
+          { !info ? (
             <div className="text-center">
               <i className="h1 fa fa-spinner fa-spin my-5" />
             </div>
@@ -97,7 +86,7 @@ const ConnectDiscord = (props = {}) => {
             <>
               <div className="d-flex flex-row align-items-center mb-4">
                 { !!info?.image && (
-                  <img src={ info.image } className="img-fluid img-avatar rounded-circle mr-2" />
+                  <img src={ info.image } className="img-fluid img-avatar rounded-circle me-2" />
                 ) }
                 <span>
                   Discord Server:
@@ -105,29 +94,33 @@ const ConnectDiscord = (props = {}) => {
                     { info?.name || 'Loading...' }
                   </b>
                 </span>
-                <button className="btn btn-info ml-auto" onClick={ (e) => loadChannels() }>
-                  <i className="fa fa-sync" />
-                </button>
               </div>
-  
+
               { !!info?.channels?.length && (
                 <div className="mb-3">
                   <label className="form-label">
                     Select Channel
                   </label>
-                  <Select options={ getChannels() } defaultValue={ getChannels().filter((f) => f.selected) } onChange={ (value) => onChannel(value?.channel) } />
+                  <Select options={ getChannels() } value={ getChannels().filter((f) => f.selected) } onChange={ (value) => props.setConnect('channel', value?.value) } />
                 </div>
               ) }
-  
+
               <div>
                 <label className="form-label">
                   Select Direction
                 </label>
-                <Select options={ getDirections() } defaultValue={ getDirections().filter((f) => f.selected) } onChange={ (value) => setConnect('direction', value?.value) } />
+                <Select options={ getDirections() } value={ getDirections().filter((f) => f.selected) } onChange={ (value) => props.setConnect('direction', value?.value) } />
               </div>
             </>
           ) }
 
+        </div>
+      ) : (
+        <div className="card-body">
+          <button onClick={ (e) => onConnect(e) } className="btn btn-dark">
+            <i className="fab fa-discord me-2" />
+            Invite Discord Bot
+          </button>
         </div>
       ) }
     </div>
