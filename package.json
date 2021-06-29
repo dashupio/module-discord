@@ -14,11 +14,15 @@
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/plugin-transform-typescript": "^7.11.0",
     "@babel/preset-env": "^7.11.5",
+    "@dashup/core": "^1.2.1",
     "@dashup/eslint-config-dashup": "0.0.1",
     "@dashup/module": "^2.0.3",
     "@dashup/ui": "0.0.1",
     "babel-plugin-add-module-exports": "^1.0.4",
     "discord.js": "^12.3.1",
+    "i": "^0.3.6",
+    "npm": "^7.19.0",
+    "socket.io-client": "^4.1.2",
     "uglifyify": "^5.0.2",
     "window-popup": "^1.1.0"
   }
