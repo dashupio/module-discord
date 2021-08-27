@@ -16,7 +16,7 @@
     "@babel/preset-env": "^7.11.5",
     "@dashup/core": "^1.2.1",
     "@dashup/eslint-config-dashup": "0.0.1",
-    "@dashup/module": "^2.0.3",
+    "@dashup/module": "^2.0.5",
     "@dashup/ui": "0.0.1",
     "babel-plugin-add-module-exports": "^1.0.4",
     "discord.js": "^12.3.1",
